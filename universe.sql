@@ -156,6 +156,42 @@ ALTER SEQUENCE public.planet_planet_id_seq OWNED BY public.planet.planet_id;
 
 
 --
+-- Name: satellite; Type: TABLE; Schema: public; Owner: freecodecamp
+--
+
+CREATE TABLE public.satellite (
+    satellite_id integer NOT NULL,
+    name character varying(30) NOT NULL,
+    launch_year integer,
+    planet_id integer
+);
+
+
+ALTER TABLE public.satellite OWNER TO freecodecamp;
+
+--
+-- Name: satellite_satellite_id_seq; Type: SEQUENCE; Schema: public; Owner: freecodecamp
+--
+
+CREATE SEQUENCE public.satellite_satellite_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.satellite_satellite_id_seq OWNER TO freecodecamp;
+
+--
+-- Name: satellite_satellite_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: freecodecamp
+--
+
+ALTER SEQUENCE public.satellite_satellite_id_seq OWNED BY public.satellite.satellite_id;
+
+
+--
 -- Name: star; Type: TABLE; Schema: public; Owner: freecodecamp
 --
 
@@ -193,43 +229,6 @@ ALTER SEQUENCE public.star_star_id_seq OWNED BY public.star.star_id;
 
 
 --
--- Name: zodiac; Type: TABLE; Schema: public; Owner: freecodecamp
---
-
-CREATE TABLE public.zodiac (
-    name character varying(30) NOT NULL,
-    start_date date NOT NULL,
-    end_date date NOT NULL,
-    planet_id integer,
-    zodiac_id integer NOT NULL
-);
-
-
-ALTER TABLE public.zodiac OWNER TO freecodecamp;
-
---
--- Name: zodiac_zodiac_id_seq; Type: SEQUENCE; Schema: public; Owner: freecodecamp
---
-
-CREATE SEQUENCE public.zodiac_zodiac_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.zodiac_zodiac_id_seq OWNER TO freecodecamp;
-
---
--- Name: zodiac_zodiac_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: freecodecamp
---
-
-ALTER SEQUENCE public.zodiac_zodiac_id_seq OWNED BY public.zodiac.zodiac_id;
-
-
---
 -- Name: galaxy galaxy_id; Type: DEFAULT; Schema: public; Owner: freecodecamp
 --
 
@@ -251,17 +250,17 @@ ALTER TABLE ONLY public.planet ALTER COLUMN planet_id SET DEFAULT nextval('publi
 
 
 --
+-- Name: satellite satellite_id; Type: DEFAULT; Schema: public; Owner: freecodecamp
+--
+
+ALTER TABLE ONLY public.satellite ALTER COLUMN satellite_id SET DEFAULT nextval('public.satellite_satellite_id_seq'::regclass);
+
+
+--
 -- Name: star star_id; Type: DEFAULT; Schema: public; Owner: freecodecamp
 --
 
 ALTER TABLE ONLY public.star ALTER COLUMN star_id SET DEFAULT nextval('public.star_star_id_seq'::regclass);
-
-
---
--- Name: zodiac zodiac_id; Type: DEFAULT; Schema: public; Owner: freecodecamp
---
-
-ALTER TABLE ONLY public.zodiac ALTER COLUMN zodiac_id SET DEFAULT nextval('public.zodiac_zodiac_id_seq'::regclass);
 
 
 --
@@ -321,6 +320,15 @@ INSERT INTO public.planet VALUES (12, 'Haumea', false, 284.00, 1);
 
 
 --
+-- Data for Name: satellite; Type: TABLE DATA; Schema: public; Owner: freecodecamp
+--
+
+INSERT INTO public.satellite VALUES (1, 'Explorer 1', 1958, 3);
+INSERT INTO public.satellite VALUES (2, 'International Space Station', 1998, 3);
+INSERT INTO public.satellite VALUES (3, 'Sputnik 1', 1957, 3);
+
+
+--
 -- Data for Name: star; Type: TABLE DATA; Schema: public; Owner: freecodecamp
 --
 
@@ -330,12 +338,6 @@ INSERT INTO public.star VALUES ('Sirius B', 3, 1, 0.01, 0.23);
 INSERT INTO public.star VALUES ('Alpheratz', 4, 2, 4.60, 0.06);
 INSERT INTO public.star VALUES ('Mirach', 5, 2, 64000.00, 1.80);
 INSERT INTO public.star VALUES ('Betelgeuse', 6, 1, 1234.00, 0.01);
-
-
---
--- Data for Name: zodiac; Type: TABLE DATA; Schema: public; Owner: freecodecamp
---
-
 
 
 --
@@ -360,17 +362,17 @@ SELECT pg_catalog.setval('public.planet_planet_id_seq', 12, true);
 
 
 --
+-- Name: satellite_satellite_id_seq; Type: SEQUENCE SET; Schema: public; Owner: freecodecamp
+--
+
+SELECT pg_catalog.setval('public.satellite_satellite_id_seq', 3, true);
+
+
+--
 -- Name: star_star_id_seq; Type: SEQUENCE SET; Schema: public; Owner: freecodecamp
 --
 
 SELECT pg_catalog.setval('public.star_star_id_seq', 6, true);
-
-
---
--- Name: zodiac_zodiac_id_seq; Type: SEQUENCE SET; Schema: public; Owner: freecodecamp
---
-
-SELECT pg_catalog.setval('public.zodiac_zodiac_id_seq', 1, false);
 
 
 --
@@ -422,6 +424,22 @@ ALTER TABLE ONLY public.planet
 
 
 --
+-- Name: satellite satellite_name_key; Type: CONSTRAINT; Schema: public; Owner: freecodecamp
+--
+
+ALTER TABLE ONLY public.satellite
+    ADD CONSTRAINT satellite_name_key UNIQUE (name);
+
+
+--
+-- Name: satellite satellite_pkey; Type: CONSTRAINT; Schema: public; Owner: freecodecamp
+--
+
+ALTER TABLE ONLY public.satellite
+    ADD CONSTRAINT satellite_pkey PRIMARY KEY (satellite_id);
+
+
+--
 -- Name: star star_name_key; Type: CONSTRAINT; Schema: public; Owner: freecodecamp
 --
 
@@ -435,22 +453,6 @@ ALTER TABLE ONLY public.star
 
 ALTER TABLE ONLY public.star
     ADD CONSTRAINT star_pkey PRIMARY KEY (star_id);
-
-
---
--- Name: zodiac zodiac_pkey; Type: CONSTRAINT; Schema: public; Owner: freecodecamp
---
-
-ALTER TABLE ONLY public.zodiac
-    ADD CONSTRAINT zodiac_pkey PRIMARY KEY (zodiac_id);
-
-
---
--- Name: zodiac zodiac_sign_key; Type: CONSTRAINT; Schema: public; Owner: freecodecamp
---
-
-ALTER TABLE ONLY public.zodiac
-    ADD CONSTRAINT zodiac_sign_key UNIQUE (name);
 
 
 --
@@ -470,19 +472,19 @@ ALTER TABLE ONLY public.planet
 
 
 --
+-- Name: satellite satellite_planet_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: freecodecamp
+--
+
+ALTER TABLE ONLY public.satellite
+    ADD CONSTRAINT satellite_planet_id_fkey FOREIGN KEY (planet_id) REFERENCES public.planet(planet_id);
+
+
+--
 -- Name: star star_galaxy_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: freecodecamp
 --
 
 ALTER TABLE ONLY public.star
     ADD CONSTRAINT star_galaxy_id_fkey FOREIGN KEY (galaxy_id) REFERENCES public.galaxy(galaxy_id);
-
-
---
--- Name: zodiac zodiac_planet_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: freecodecamp
---
-
-ALTER TABLE ONLY public.zodiac
-    ADD CONSTRAINT zodiac_planet_id_fkey FOREIGN KEY (planet_id) REFERENCES public.planet(planet_id);
 
 
 --
